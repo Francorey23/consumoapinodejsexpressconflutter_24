@@ -1,7 +1,51 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class PaginadeInicio extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class PaginadeInicio extends StatefulWidget {
   const PaginadeInicio({super.key});
+
+  @override
+  State<PaginadeInicio> createState() => _PaginadeInicioState();
+}
+
+class _PaginadeInicioState extends State<PaginadeInicio> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isloading = false;
+  Future<void> _login() async {
+    setState(() {
+      _isloading = true;
+    });
+    final responselogin =
+        //await http.post(Uri.parse("http://10.0.2.2:9000/auth/login"),
+        await http.post(
+            Uri.parse(
+                "https://apirestnodeexpressmongodb.onrender.com/auth/login"),
+            //await http.post(Uri.parse("http://localhost:9000/auth/login"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              "email": _emailController.text,
+              "password": _passwordController.text,
+            }));
+    setState(() {
+      _isloading = false;
+    });
+    //manejar la respuesta
+    if (responselogin.statusCode == 200) {
+      final responsebody = jsonDecode(responselogin.body);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("login exitoso")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("error")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +74,7 @@ class PaginadeInicio extends StatelessWidget {
               ),
               SizedBox(height: 30),
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Digita Email',
                   prefixIcon: Icon(Icons.email),
@@ -40,6 +85,7 @@ class PaginadeInicio extends StatelessWidget {
               ),
               SizedBox(height: 15),
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -53,8 +99,10 @@ class PaginadeInicio extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text("Iniciar sesión"),
+                  onPressed: _isloading ? null : _login,
+                  child: _isloading
+                      ? CircularProgressIndicator()
+                      : Text("Iniciar sesión"),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 15.0),
                     shape: RoundedRectangleBorder(
@@ -76,7 +124,7 @@ class PaginadeInicio extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () {},
                   icon: Image.network(
-                    "https://brandemia.org/sites/default/files/sites/default/files/google_icono_despues.jpg",
+                    "https://img.freepik.com/fotos-premium/representacion-3d-logotipo-aplicacion-google-sobre-fondo-blanco_41204-8013.jpg",
                     height: 41,
                     width: 41,
                   ),
@@ -94,7 +142,7 @@ class PaginadeInicio extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () {},
                   icon: Image.network(
-                    "https://img.freepik.com/vector-premium/icono-logotipo-circulo-facebook-aplicacion-redes-sociales-aplicacion-red-marca-editorial-popular-ilustracion-vectorial_913857-373.jpg",
+                    "https://img.freepik.com/fotos-premium/representacion-3d-logotipo-aplicacion-google-sobre-fondo-blanco_41204-8013.jpg",
                     height: 41,
                     width: 41,
                   ),
@@ -115,7 +163,9 @@ class PaginadeInicio extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/registro');
+                },
                 child: Text(
                   "No tiene una cuenta? Registrarse",
                   style: TextStyle(color: Colors.blue),

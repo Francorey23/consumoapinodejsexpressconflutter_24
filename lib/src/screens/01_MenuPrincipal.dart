@@ -22,7 +22,7 @@ class _MenuPrincipalState extends State<MenuPrincipal> {
               Text("Mercado Libre Col"),
               ElevatedButton(
                 onPressed: () {
-                   Navigator.pushNamed(context, '/inicio');
+                  Navigator.pushNamed(context, '/inicio');
                 },
                 child: Text("Iniciar sesión"),
                 style: ElevatedButton.styleFrom(
@@ -83,9 +83,9 @@ class _MenuPrincipalState extends State<MenuPrincipal> {
                     elevation: 2.0,
                     margin: EdgeInsets.all(5),
                     child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
+                      /*  onTap: () {
+                        //Navigator.pop(context);
+                      }, */
                       child: Padding(
                         padding: EdgeInsets.all(10),
                         child: Column(
@@ -126,7 +126,6 @@ class _MenuPrincipalState extends State<MenuPrincipal> {
     );
   }
 }
-
 
 ///////////////////////
 final List<Map<String, dynamic>> categories = [
